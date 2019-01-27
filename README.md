@@ -5,7 +5,7 @@ SRE ASSIGNMENT NOTES
 
 ### Here is the brief description of what I've done:
 
-I prepared the Terraform configuration that configures AWS VPC with a subnet, route, Internet Gateway, security group, and EC2 instance with RHEL 7.6 OS onboard. When an EC2 instance is ready, Terraform lanches Ansible that takes care of the OS configuration. In particular, it configures OS parameters, firewall rules, deploys a nginx container, update SELinix settings, accounts, sudo access rights, and deploys a monitoring script (8 a..c) - you'll find it at `/usr/local/bin/healthcheck.sh`.
+I prepared the Terraform configuration that configures AWS with a VPC, subnet, route, Internet Gateway, security group, and EC2 instance with RHEL 7.6 OS onboard. When an EC2 instance is ready, Terraform lanches Ansible that takes care of the OS configuration. In particular, it configures OS parameters, firewall rules, deploys a nginx container, update SELinix settings, accounts, sudo access rights, and deploys a monitoring script (8 a..c) - you'll find it at `/usr/local/bin/healthcheck.sh`.
 
 To simplify the deployment process, I wrote the script (`provision.sh`) that validates Terraform and Ansible code, prints a report of what it's going to do, and deploys changes to the cloud. As requested, the script takes AWS credentials as arguments, although you may use environment variables as well.  Use the command `provision.sh --help` to get the script usage info.
 
