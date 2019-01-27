@@ -37,5 +37,4 @@
 - name: Run the healthcheck.sh on the target host in the background mode
   shell: "nohup {{ docker_nginx__healthcheck_script_path }} &"
   changed_when: false
-  notify: Display an IP address
 ...
