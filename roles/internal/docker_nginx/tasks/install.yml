@@ -37,14 +37,5 @@
 - name: Run the healthcheck.sh on the target host in the background mode
   shell: "nohup {{ docker_nginx__healthcheck_script_path }} &"
   changed_when: false
-
-- name: Display the destination host IP address
-  debug:
-    msg: "{{ item }}"
-  with_items:
-    - "************************************************************"
-    - "*                                                          *"
-    - "*  The destination host IP address is {{ ansible_host }}   *"
-    - "*                                                          *"
-    - "************************************************************"
+  notify: Display an IP address
 ...
