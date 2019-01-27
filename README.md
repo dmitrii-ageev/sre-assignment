@@ -12,7 +12,8 @@ To simplify the deployment process, I wrote the script (`provision.sh`) that val
 Okay, I was going to explain how you should download and install all the required software...However, instead of this, I created a Docker image that has all the required software inside (saved me a lot of typing, and probably it'll save you some time as well).
 
 **Here is what you need to do:**
-run this command (hope you have Docker installed):
+
+Run this command (hope you have Docker installed):
 
 `docker run -it --rm -h sre-assignment dmitriiageev/sre-assignment`
 
