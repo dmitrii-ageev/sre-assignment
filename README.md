@@ -25,8 +25,10 @@ When a deployment process completed, the script prints out the server IP address
 
 ### Risks associated with the application deployment:
 
-Firstly, because of the way how Terraform works, the deployment process would be stopped if there is a name conflict (in the case when already exists an element of infrastructure with the same name). Secondly, if a connection to the Internet dropped in the middle of the deployment process, the configuration process wouldn't be accomplished, and the service wouldn't work as expected (yeah, push-like configuration managers affected to that risk).
-The last one, to organise proper testing you need a staging environment that fully copies the production one, and the continuous integration tool, of course, like Jenkins or GitLab CI. Just code syntax validation is not enough.
+Firstly, because of the way how Terraform works, the deployment process would be stopped if there is a name conflict (in the case when already exists an element of infrastructure with the same name).
+Secondly, if a connection to the Internet dropped in the middle of the deployment process, the configuration process wouldn't be accomplished, and the service wouldn't work as expected (yeah, push-like configuration managers affected to that risk).
+Lastly, to organise proper testing you need a staging environment that fully copies the production one, and the continuous integration tool, of course, like Jenkins or GitLab CI. Just code syntax validation is not enough.
+
 One more thing: if you use a container for a deployment process, you'll lose terraform state info as soon as the container is destroyed, so it's a good idea to run the command `terraform destroy terraform` when you've done with testing.
 
 ### Questions, comments, concerns
