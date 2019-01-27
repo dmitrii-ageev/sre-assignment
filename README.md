@@ -13,9 +13,11 @@ Okay, I was going to explain how you should download and install all the require
 
 **Here is what you need to do:**
 run this command (hope you have Docker installed):
+
 `docker run -it --rm -h sre-assignment dmitriiageev/sre-assignment`
 
 As soon as you get a shell prompt, run (the leading dot is not a typo):
+
 `. ./provision.sh -k <AWS access key>  -s <AWS secret access key> -r <AWS region name>`.
 
 When a deployment process completed, the script prints out the server IP address, so you can check how it responds. The monitoring log will be available at: `http://ip.address.goes.here/resource.log` .
