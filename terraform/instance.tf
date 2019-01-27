@@ -24,6 +24,6 @@ resource "aws_instance" "web" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -v -u ${var.user_name} -i inventory -e 'ansible_host=${self.public_ip}' --private-key ${path.cwd}/${var.ssh_key["private"]} provision.yml"
+    command = "ansible-playbook -u ${var.user_name} -i inventory -e 'ansible_host=${self.public_ip}' --private-key ${path.cwd}/${var.ssh_key["private"]} provision.yml"
   }
 }
