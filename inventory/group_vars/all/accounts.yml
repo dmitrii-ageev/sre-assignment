@@ -17,8 +17,8 @@ mandatory_system_accounts:
     "ec2-user":
         name: ec2-user
         uid: 1000
-        email: automation@co.nz
-        display_name: Automation Account
+        email: root@server.qrious.co.nz
+        display_name: Standard EC2 account
         # password
         password: $6$GR7WE8wx$IJOXiwBZod/Recm9R8chd9QvybKAwDGncSu8opDuhhm9lEjHjkyZHASuS2M8cew1i6ZrwvI/7fQwopS5ezA2R.
         ssh_key:
@@ -33,7 +33,7 @@ system_accounts:
         name: backup
         uid: 777
         non_interactive: true
-        email: backup@qrious.co.nz
+        email: backup@server.qrious.co.nz
         display_name: Backup
         shell: /bin/bash
 
