@@ -1,0 +1,8 @@
+---
+# groups applied to all user accounts
+global__user_groups_everyone: ["backup"]
+
+# sudoer group is a distribution specific, so we abstract that fact here.
+global__user_sudoers:
+    - ec2-user 
+...

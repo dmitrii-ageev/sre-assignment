@@ -1,0 +1,5 @@
+---
+# Host name and domain settings
+hostname: ns1
+domainname: qrious.co.nz
+...

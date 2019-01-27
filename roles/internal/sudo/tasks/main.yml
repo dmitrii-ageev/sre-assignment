@@ -1,0 +1,42 @@
+---
+- name: Install sudo package
+  package:
+    name: sudo
+    state: present
+
+- name: Creating sudo group
+  group:
+    name: "{{ sudo__group_name }}"
+    state: present
+    system: true
+
+- name: Creating sudoers.d directory
+  file:
+    path: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: 0750
+    state: directory
+
+- name: Create sudoers.d files
+  template:
+    src: sudoers.d.j2
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    mode: 0440
+    owner: root
+    group: root
+    validate: "/usr/sbin/visudo -cf %s"
+  with_items: "{{ sudo__sudoers_d }}"
+  when:
+    - sudo__sudoers_d is defined
+    - sudo__sudoers_d
+
+- name: Creating sudoers file
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    validate: '/usr/sbin/visudo -cf %s'
+...

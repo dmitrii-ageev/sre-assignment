@@ -1,0 +1,36 @@
+---
+
+- block:
+    - name: Disable service and stop it
+      systemd:
+        name: "{{ ntp__service_name }}"
+        enabled: no
+        state: stopped
+      failed_when: False
+      notify: Systemd daemon reload
+
+    - name: Delete the service systemd unit file if it exists
+      file:
+        path: "{{ ntp__system_service_file }}"
+        state: absent
+  when: ntp__service_manager == 'systemd'
+
+- block:
+    - name: Disable service and stop it
+      service:
+        name: "{{ ntp__service_name }}"
+        enabled: no
+        state: stopped
+      failed_when: False
+
+    - name: Delete the service startup file
+      file:
+        path: "{{ ntp__system_init_file }}"
+        state: absent
+  when: ntp__service_manager == 'service'
+
+- name: Delete the service environment file
+  file:
+    path: "{{ ntp__system_env_file }}"
+    state: absent
+...

@@ -1,0 +1,33 @@
+---
+- name: Set server hostname
+  hostname:
+    name: "{{ hostname__fqdn }}"
+
+- name: Create the /etc/hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: 0644
+
+- name: Add FQDN hostname to the /etc/sysconfig/network file
+  lineinfile:
+    dest: /etc/sysconfig/network
+    regexp: "^HOSTNAME"
+    line: "HOSTNAME={{ hostname__fqdn }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Check if the AWS cloud configuration file exists
+  stat:
+    path: /etc/cloud/cloud.cfg
+  register: hostname__aws_configuration_file
+  changed_when: false
+
+- name: Enable hostname preserving after reboot for AWS VM
+  lineinfile:
+    dest: /etc/cloud/cloud.cfg
+    regexp: "^preserve_hostname:"
+    line: "preserve_hostname: true"
+  when: hostname__aws_configuration_file.stat.exists
+...

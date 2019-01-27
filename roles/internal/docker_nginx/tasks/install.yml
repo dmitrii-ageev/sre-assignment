@@ -1,0 +1,40 @@
+---
+- name: Make sure resources.log file exists
+  file:
+    path: "{{ docker_nginx__resource_log }}"
+    owner: "{{ docker__user }}"
+    group: "{{ docker__group }}"
+    mode: "0644"
+    state: touch
+  changed_when: false
+
+- name: Run the nginx container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    state: started
+    pull: true
+    force_kill: false
+    keep_volumes: false
+    detach: true
+    interactive: false
+    ports:
+      - "80:80/tcp"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "{{ docker_nginx__resource_log }}:/usr/share/nginx/html/resource.log:ro"
+    privileged: false
+    restart_policy: unless-stopped
+
+- name: Copy the healthcheck.sh script to the target host
+  copy:
+    src: "{{ docker_nginx__healthcheck_script_local }}"
+    dest: "{{ docker_nginx__healthcheck_script_path }}"
+    owner: "{{ docker__user }}"
+    group: "{{ docker__group }}"
+    mode: "0755"
+
+- name: Run the healthcheck.sh on the target host in the background mode
+  shell: "nohup {{ docker_nginx__healthcheck_script_path }} &"
+  changed_when: false
+...

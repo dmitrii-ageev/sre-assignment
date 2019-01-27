@@ -1,0 +1,18 @@
+---
+nginx__state: absent
+nginx__vhosts:
+  - name: default
+    state: absent
+
+  - name: "simple.conf"
+    state: present
+    configuration:
+      - server:
+          - listen      80
+          - listen      [::]:80
+          - charset     utf-8
+
+          - location /:
+              root: /var/www
+              index: index.html
+...

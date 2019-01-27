@@ -1,0 +1,77 @@
+---
+common__packages:
+  remove:
+    - exim4
+    - chrony
+    - tuned
+    - qemu-guest-agent
+  install:
+    - bash
+    - bash-completion
+    - deltarpm
+    - vim-minimal
+    - yum-utils
+    - mlocate
+    - mailx
+    - wget
+    - curl
+    - ftp
+    - screen
+    - links
+    - net-tools
+    - bind-utils
+    - telnet
+    - traceroute
+    - tcpdump
+    - openssl
+    # SELinux stuff
+    - policycoreutils
+    - policycoreutils-python
+    - selinux-policy
+    - selinux-policy-devel
+    - selinux-policy-targeted
+    - setools-console
+    - setools-libs
+    - setroubleshoot
+    - setroubleshoot-plugins
+    - setroubleshoot-server
+    - libselinux
+    - libselinux-python
+    - libselinux-utils
+    - libsemanage
+    - libsemanage-python
+    - libsepol
+
+common__files:
+  remove:
+    - /var/log/auth.log
+    - /var/log/auth.log.1
+    - /var/log/auth.log.2.gz
+    - /var/log/auth.log.3.gz
+    - /var/log/auth.log.4.gz
+    - /var/log/tuned
+    - /var/log/qemu-ga
+    - /var/log/wtmp.1.gz
+    - /var/log/lastlog.1
+    - /var/log/dmesg.old
+    - /var/log/grubby_prune_debug
+    - /var/log/ppp
+    - /var/log/ethcon.log
+    - /var/log/imageboot.log
+  chmod:
+    - name: /var/log/wtmp
+      group: utmp
+      mode: '0660'
+    - name: /var/log/lastlog
+      group: adm
+      mode: '0640'
+    - name: /var/log/dmesg
+      group: adm
+      mode: '0640'
+    - name: /var/log/anaconda
+      state: directory
+      mode: '0700'
+    - name: /var/log/boot.log
+      group: adm
+      mode: '0640'
+...

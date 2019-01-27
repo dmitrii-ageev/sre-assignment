@@ -1,0 +1,59 @@
+---
+- name: Create the system environment file
+  template:
+    src: "{{ ansible_os_family }}.environment.file.j2"
+    dest: "{{ ntp__system_env_file }}"
+    mode: "{{ ntp__file_mode }}"
+  notify: Reload ntp service
+
+# Install systemd unit file if it's supported by OS
+- block:
+    - name: Check if the init script exists
+      stat:
+        path: "{{ ntp__system_init_file }}"
+      register: ntp__init_file
+
+    - block:
+        - name: Stop NTP service if it's running
+          service:
+            name: "{{ ntp__service_name }}"
+            state: stopped
+
+        - name: Delete the init script
+          file:
+            path: "{{ ntp__system_init_file }}"
+            state: absent
+      when: ntp__init_file.stat.exists
+
+    - name: Create the service system unit file
+      template:
+        src: "{{ ansible_os_family }}.unit.file.j2"
+        dest: "{{ ntp__system_service_file }}"
+        mode: "{{ ntp__file_mode }}"
+      notify: Restart ntp service
+
+    - name: Enable service and start it
+      systemd:
+        name: "{{ ntp__service_name }}"
+        enabled: yes
+        daemon-reload: yes
+        state: started
+  when: ntp__service_manager == 'systemd'
+
+# Install service init script if systemd is not available
+# For distributions prior to Ubuntu 16 and RedHat 7
+- block:
+    - name: Create the service startup file
+      template:
+        src: "{{ ansible_os_family }}.init.file.j2"
+        dest: "{{ ntp__system_init_file }}"
+        mode: "{{ ntp__exec_mode }}"
+      notify: Restart ntp service
+
+    - name: Enable service and start it
+      service:
+        name: "{{ ntp__service_name }}"
+        enabled: yes
+        state: started
+  when: ntp__service_manager == 'service'
+...

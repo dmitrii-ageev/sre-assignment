@@ -1,0 +1,30 @@
+---
+# DEFAULT RSYSLOG SETTINGS
+rsyslog__default_config:
+  - name: "50-default.conf"
+    config:
+    - comment: "First some standard log files. Log by facility."
+      options: |
+        auth,authpriv.*                           /var/log/secure
+        *.*;auth,authpriv.none                    /var/log/syslog
+        *.info;mail.none;authpriv.none;cron.none  /var/log/messages
+        cron.*                                    /var/log/cron.log
+        daemon.*                                  -/var/log/daemon.log
+        kern.*                                    -/var/log/kern.log
+        lpr.*                                     -/var/log/lpr.log
+        mail.*                                    -/var/log/mail.log
+    - comment: "Logging for the mail system."
+      options: |
+        mail.info                                 -/var/log/mail.info
+        mail.warn                                 -/var/log/mail.warn
+        mail.err                                  -/var/log/mail.err
+    - comment: "Everybody gets emergency messages."
+      options: |
+        *.emerg                                   *
+    - comment: "Logging to the console."
+      options: |
+        daemon.*;mail.*;\
+                 news.err;\
+                 *.=debug;*.=info;\
+                 *.=notice;*.=warn                |/dev/console
+...

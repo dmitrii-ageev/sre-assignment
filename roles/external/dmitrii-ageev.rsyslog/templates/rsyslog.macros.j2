@@ -1,0 +1,19 @@
+{# rsyslog.macros.j2 #}
+{% macro print_config(element) %}
+{%   if element is mapping %}
+{%     if element.state is undefined or element.state != 'absent' %}
+{%       if element.comment is defined %}
+{{         element.comment | comment }}
+{%       endif %}
+{%       if element.options is defined %}
+{{         element.options }}
+{%       endif %}
+{%     endif %}
+{%   elif element is string %}
+{{     element }}
+{%   elif element is iterable %}
+{%     for item in element %}
+{{       print_config(item) -}}
+{%     endfor %}
+{%   endif %}
+{% endmacro %}

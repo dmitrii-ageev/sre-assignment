@@ -1,0 +1,52 @@
+---
+shhirose_firewalld:
+  default_zone: public
+
+  zones:
+    - zone: public
+      state: enabled
+
+  interfaces:
+    - interface: eth0
+      immediate: true
+      permanent: true
+      state: enabled
+
+  services:
+    - service: ssh
+      immediate: true
+      permanent: true
+      state: enabled
+
+  rich_rules:
+    - rule: "rule service name=ssh accept limit value=2/m"
+      immediate: true
+      permanent: true
+      state: enabled
+
+  icmp_blocks:
+    - type: echo-request
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: host-redirect
+      immediate: true
+      permanent: true
+      state: enabled
+    - type: network-redirect
+      immediate: true
+      permanent: true
+      state: enabled
+    - type: redirect
+      immediate: true
+      permanent: true
+      state: enabled
+    - type: tos-host-redirect
+      immediate: true
+      permanent: true
+      state: enabled
+    - type: tos-network-redirect
+      immediate: true
+      permanent: true
+      state: enabled
+...

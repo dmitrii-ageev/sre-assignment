@@ -1,0 +1,7 @@
+---
+- include: install.yml
+  when: docker__state == "present"
+
+- include: uninstall.yml
+  when: docker__state == "absent"
+...

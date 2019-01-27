@@ -1,0 +1,5 @@
+---
+sudo__sudoers:
+  - name: "%{{ sudo__group_name }}"
+    nopasswd: true
+...

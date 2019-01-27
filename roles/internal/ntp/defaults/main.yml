@@ -1,0 +1,164 @@
+---
+# Status of package ( present, absent )
+ntp__state:                present
+
+# Service, daemon, opt_ions and description
+ntp__service:              "ntp"
+
+# This variable might be changed within a task
+ntp__daemon:               "{{ ntp__service }}d"
+ntp__service_name:         "{{ ntp__service  if ansible_os_family == 'Debian' else ntp__daemon }}"
+ntp__description:          "{{ ntp__service }} - network time protocol (NTP) daemon."
+
+# The -g option allows ntp to set time without restriction
+ntp__daemon_options:       "-g -u {{ ntp__user }}:{{ ntp__group }} -p {{ ntp__pid_file }} -f {{ ntp__drift_file }}"
+ntp__daemon_fork:          True
+ntp__daemon_run_as_root:   True
+
+# Service manager settings; possible options are: 'service' and 'systemd'
+ntp__service_manager:      "systemd"
+
+# User and group
+ntp__user:                 "{{ ntp__service }}"
+ntp__group:                "{{ ntp__user }}"
+
+# Modes
+ntp__dir_mode:             "0755"
+ntp__file_mode:            "0644"
+ntp__exec_mode:            "0755"
+
+# Directories
+ntp__root_dir:             ""
+ntp__home_dir:             "{{ ntp__root_dir }}/home"
+ntp__etc_dir:              "{{ ntp__root_dir }}/etc"
+ntp__bin_dir:              "{{ ntp__root_dir }}/bin"
+ntp__sbin_dir:             "{{ ntp__root_dir }}/sbin"
+ntp__lib_dir:              "{{ ntp__root_dir }}/lib"
+ntp__lib64_dir:            "{{ ntp__root_dir }}/lib64"
+ntp__opt_dir:              "{{ ntp__root_dir }}/opt"
+ntp__opt_conf_dir:         "{{ ntp__opt_dir }}/etc"
+ntp__opt_bin_dir:          "{{ ntp__opt_dir }}/bin"
+ntp__opt_sbin_dir:         "{{ ntp__opt_dir }}/sbin"
+ntp__opt_lib_dir:          "{{ ntp__opt_dir }}/lib"
+ntp__opt_lib64_dir:        "{{ ntp__opt_dir }}/lib64"
+ntp__usr_dir:              "{{ ntp__root_dir }}/usr"
+ntp__usr_bin_dir:          "{{ ntp__usr_dir }}/bin"
+ntp__usr_sbin_dir:         "{{ ntp__usr_dir }}/sbin"
+ntp__usr_lib_dir:          "{{ ntp__usr_dir }}/lib"
+ntp__usr_lib64_dir:        "{{ ntp__usr_dir }}/lib64"
+ntp__var_dir:              "{{ ntp__root_dir }}/var"
+ntp__var_run_dir:          "{{ ntp__var_dir }}/run"
+ntp__var_lib_dir:          "{{ ntp__var_dir }}/lib"
+ntp__var_log_dir:          "{{ ntp__var_dir }}/log"
+ntp__var_lock_dir:         "{{ ntp__var_dir }}/lock"
+ntp__var_cache_dir:        "{{ ntp__var_dir }}/cache"
+ntp__var_spool_dir:        "{{ ntp__var_dir }}/spool"
+ntp__var_tmp_dir:          "{{ ntp__var_dir }}/tmp"
+ntp__var_db_dir:           "{{ ntp__var_dir }}/db"
+
+ntp__conf_dir:             "{{ ntp__etc_dir }}"
+ntp__user_home_dir:        "{{ ntp__home_dir }}/{{ ntp__user }}"
+ntp__run_dir:              "{{ ntp__var_run_dir if ansible_os_family == 'Debian' else '/run/'+ntp__service }}"
+ntp__log_dir:              "{{ ntp__var_log_dir }}/{{ ntp__service }}"
+ntp__lock_dir:             "{{ ntp__var_lock_dir }}"
+ntp__cache_dir:            "{{ ntp__var_cache_dir }}/{{ ntp__service }}"
+ntp__spool_dir:            "{{ ntp__var_spool_dir }}/{{ ntp__service }}"
+ntp__tmp_dir:              "{{ ntp__var_tmp_dir }}/{{ ntp__service }}"
+ntp__stats_dir:            "{{ ntp__var_log_dir }}/ntpstats"
+ntp__keys_dir:             "{{ ntp__etc_dir }}/{{ ntp__service }}"
+ntp__drift_dir:            "{{ ntp__var_lib_dir }}/{{ ntp__service }}"
+ntp__system_env_dir:       "{{ ntp__etc_dir }}/{{ 'default' if ansible_os_family == 'Debian' else 'sysconfig' }}"
+
+ntp__directories:
+  - "{{ ntp__stats_dir }}"
+  - "{{ ntp__keys_dir }}"
+  - "{{ ntp__drift_dir }}"
+
+# Files
+ntp__daemon_file:          "{{ ntp__usr_sbin_dir }}/{{ ntp__daemon }}"
+ntp__conf_file:            "{{ ntp__conf_dir }}/{{ ntp__service }}.conf"
+ntp__sysconfig_file:       "{{ ntp__etc_dir }}/sysconfig/{{ ntp__service }}"
+ntp__logrotate_file_name:  "{{ ntp__service }}"
+ntp__vendor_service_file:  "{{ ntp__usr_lib_dir }}/systemd/system/{{ ntp__service }}.service"
+ntp__system_service_file:  "{{ ntp__etc_dir }}/systemd/system/{{ ntp__service }}.service"
+ntp__system_init_file:     "{{ ntp__etc_dir }}/init.d/{{ ntp__service }}"
+ntp__system_env_file:      "{{ ntp__system_env_dir }}/{{ ntp__service }}"
+ntp__pid_file:             "{{ ntp__run_dir }}/{{ ntp__daemon }}.pid"
+ntp__log_file:             "{{ ntp__log_dir }}/{{ ntp__daemon }}.log"
+ntp__debug_file:           "{{ ntp__log_dir }}/{{ ntp__daemon }}.run"
+ntp__lock_file:            "{{ ntp__lock_dir }}/{{ ntp__daemon }}.lock"
+ntp__drift_file:           "{{ ntp__drift_dir }}/{{ ntp__daemon }}.drift"
+
+# IP addresses (could be a list)
+ntp__host_ipv4_address:    "{{ ansible_default_ipv4.address | default('127.0.0.1') }}"
+ntp__host_ipv6_address:    "{{ ansible_default_ipv6.address | default('::1') }}"
+
+ntp__ipv4_addresses:       "{{ ntp__host_ipv4_address }}"
+ntp__ipv6_addresses:       "{{ ntp__host_ipv6_address }}"
+
+# Required packages
+ntp__packages:
+  Ubuntu:
+    18:
+      packages:
+        - "{{ ntp__service }}"
+      repositories: ''
+    16:
+      packages:
+        - "{{ ntp__service }}"
+      repositories: ''
+  RedHat:
+    7:
+      packages:
+        - "{{ ntp__service }}"
+      repositories: ''
+  CentOS:
+    7:
+      packages:
+        - "{{ ntp__service }}"
+      repositories: ''
+  Debian:
+    8:
+      packages:
+        - "{{ ntp__service }}"
+      repositories: ''
+
+# Default NTP settings
+ntp__servers:
+  - "0.centos.pool.ntp.org iburst"
+  - "1.centos.pool.ntp.org iburst"
+  - "0.ubuntu.pool.ntp.org iburst"
+  - "1.ubuntu.pool.ntp.org iburst"
+
+ntp__restrict:
+  - "-4 default kod notrap nomodify nopeer noquery"
+  - "-6 default kod notrap nomodify nopeer noquery"
+  - "127.0.0.1"
+  - "-6 ::1"
+  - "source notrap nomodify noquery"
+
+ntp__statistics: "loopstats peerstats clockstats"
+ntp__file_gen:
+  - "loopstats file loopstats type day enable"
+  - "peerstats file peerstats type day enable"
+  - "clockstats file clockstats type day enable"
+
+ntp__auth: True
+ntp__broadcast: False
+ntp__broadcast_client: False
+ntp__multicast_client: False
+
+ntp__crypto: False
+ntp__include_file: ""
+
+# Path for a key file
+# See http://www.ntp.org/ntpfaq/NTP-s-config-adv.htm for help
+ntp__keys: ""
+# Define keys:
+# ntp__trusted_key: "4 6 14 15 22"
+# ntp__request_key: "15"
+# ntp__control_key: "15"
+ntp__trusted_key: ""
+ntp__request_key: ""
+ntp__control_key: ""
+...

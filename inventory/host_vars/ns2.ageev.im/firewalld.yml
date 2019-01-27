@@ -1,0 +1,80 @@
+---
+shhirose_firewalld:
+  default_zone: drop
+
+  zones:
+    - zone: drop
+      state: enabled
+
+  interfaces:
+    - interface: eth0
+      zone: drop
+      immediate: true
+      permanent: true
+      state: enabled
+    - interface: eth1
+      zone: drop
+      immediate: true
+      permanent: true
+      state: enabled
+
+  targets:
+    - target: DROP
+      zone: drop
+
+  services:
+    - service: ssh
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - service: dns
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+
+  rich_rules:
+    - rule: "rule service name=ssh accept limit value=2/m"
+      zone: drop
+      immediate: true
+      permanent: true
+      state: enabled
+    - rule: "rule service name=dns accept limit value=5/m"
+      zone: drop
+      immediate: true
+      permanent: true
+      state: enabled
+
+  icmp_blocks:
+    - type: echo-request
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: host-redirect
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: network-redirect
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: redirect
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: tos-host-redirect
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: tos-network-redirect
+      zone: drop
+      immediate: true
+      permanent: true
+      state: disabled
+...

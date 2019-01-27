@@ -1,0 +1,17 @@
+---
+- name: Delete the daemon's user
+  user:
+    name: "{{ docker__user }}"
+    state: absent
+    remove: true
+
+- name: Delete the daemon's group
+  group:
+    name: "{{ docker__group }}"
+    state: absent
+
+- name: Delete Docker repository
+  yum_repository:
+    name: docker.main
+    state: absent
+...

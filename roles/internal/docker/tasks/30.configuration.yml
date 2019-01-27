@@ -1,0 +1,28 @@
+---
+- name: Create the bash completion file
+  copy:
+    src: docker
+    dest: "{{ docker__etc_dir }}/bash_completion.d/{{ docker__daemon }}"
+    mode: "{{ docker__file_mode }}"
+
+- name: Create the service options file
+  template:
+    src: options.j2
+    dest: "{{ docker__sysconfig_options_file }}"
+    mode: "{{ docker__file_mode }}"
+  notify: Restart service
+
+- name: Create the service system unit file
+  template:
+    src: unit.file.j2
+    dest: "{{ docker__system_service_file }}"
+    mode: "{{ docker__file_mode }}"
+  notify: Restart service
+
+- name: Enable service at startup
+  systemd:
+    name: "{{ docker__service }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+...

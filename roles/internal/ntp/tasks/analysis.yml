@@ -1,0 +1,52 @@
+---
+# Please note: I used not the best construction in the conditional below, I'll try to find a better way to do it later.
+- name: Check if we support the OS distribution
+  fail:
+    msg: "The {{ ansible_distribution }} operating system is not supported!"
+  when: not ansible_distribution in ntp__packages
+
+- name: Check if we support the RedHat version
+  fail:
+    msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
+  when:
+    - ansible_distribution == "RedHat"
+    - not ansible_distribution_major_version|int in ntp__packages.RedHat
+
+- name: Check if we support the CentOS version
+  fail:
+    msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
+  when:
+    - ansible_distribution == "CentOS"
+    - not ansible_distribution_major_version|int in ntp__packages.CentOS
+
+- name: Check if we support the Debian version
+  fail:
+    msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
+  when:
+    - ansible_distribution == "Debian"
+    - not ansible_distribution_major_version|int in ntp__packages.Debian
+
+- name: Check if we support the Ubuntu version
+  fail:
+    msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
+  when:
+    - ansible_distribution == "Ubuntu"
+    - not ansible_distribution_major_version|int in ntp__packages.Ubuntu
+
+- name: Check what kind of service manager is available
+  stat:
+    path: '/proc/1/exe'
+  register: ntp__service_manager_stat
+
+- name: Set service manager to systemd
+  set_fact:
+    ntp__service_manager: 'systemd'
+  when: "'systemd' in ntp__service_manager_stat.stat.lnk_source"
+
+- name: Set service name
+  set_fact:
+    ntp__service_name: "{{ ntp__service }}d"
+  when:
+    - "not 'systemd' in ntp__service_manager_stat.stat.lnk_source"
+    - ansible_distribution_family == "RedHat"
+...

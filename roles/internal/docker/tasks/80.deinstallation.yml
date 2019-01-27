@@ -1,0 +1,13 @@
+---
+- name: Delete the application folders set
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ docker__directories }}"
+
+- name: Uninstall the docker packages
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ docker__packages }}"
+...

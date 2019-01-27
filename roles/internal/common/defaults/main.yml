@@ -1,0 +1,24 @@
+---
+# defaults file for common
+#
+# A list of packages to install,remove or upgrade
+common__packages:
+  # install:
+  #   -
+  # upgrade:
+  #   -
+  #
+  remove:
+    - exim4
+
+common__files:
+  # create:
+  #    -
+  # copy:
+  #   - name: /etc/yum/yum.repo
+  #     owner: root
+  #     group: root
+  #     mode: 0644
+  remove:
+    - /var/log/auth.log*
+...

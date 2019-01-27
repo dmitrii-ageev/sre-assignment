@@ -1,0 +1,8 @@
+---
+- name: "Delete the configuration file"
+  file:
+    path: "{{ ntp__conf_file }}"
+    state: absent
+  when:
+    - ntp__conf_file is defined
+...

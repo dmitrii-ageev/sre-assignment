@@ -1,0 +1,25 @@
+---
+
+- name: Start service
+  systemd:
+    daemon-reload: yes
+    name: "{{ docker__service }}.service"
+    state: started
+
+- name: Stop service
+  systemd:
+    daemon-reload: yes
+    name: "{{ docker__service }}.service"
+    state: stopped
+
+- name: Restart service
+  systemd:
+    daemon-reload: yes
+    name: "{{ docker__service }}.service"
+    state: restarted
+
+- name: Reload service
+  systemd:
+    name: "{{ docker__service }}.service"
+    state: reloaded
+...

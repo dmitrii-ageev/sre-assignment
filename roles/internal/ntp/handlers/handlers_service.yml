@@ -1,0 +1,43 @@
+---
+- name: Using SystemV manager to start service
+  service:
+    name: "{{ ntp__service_name }}"
+    state: started
+  register: ntp__service_started
+  listen: Start ntp service
+  when:
+    - ntp__service_manager == 'service'
+    - ntp__service_started is undefined or not ntp__service_started.changed
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+    - ntp__service_reloaded is undefined or not ntp__service_reloaded.changed
+
+- name: Using SystemV manager to stop service
+  service:
+    name: "{{ ntp__service_name }}"
+    state: stopped
+  register: ntp__service_stopped
+  listen: Stop ntp service
+  when:
+    - ntp__service_manager == 'service'
+    - ntp__service_stopped is undefined or not ntp__service_stopped.changed
+
+- name: Using SystemV manager to restart service
+  service:
+    name: "{{ ntp__service_name }}"
+    state: restarted
+  register: ntp__service_restarted
+  listen: Restart ntp service
+  when:
+    - ntp__service_manager == 'service'
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+
+- name: Using SystemV manager to reload service
+  service:
+    name: "{{ ntp__service_name }}"
+    state: reloaded
+  when:
+    - ntp__service_manager == 'service'
+    - ntp__service_started is undefined or not ntp__service_started.changed
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+  listen: Reload ntp service
+...

@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: True
+  roles:
+  - rsyslog
+  - role: rsyslog
+    rsyslog__default_config:
+    - name: "10-stunnel.conf"
+      config:
+      - comment: "Example settings."
+        options: |-
+          :syslogtag, contains, "stunnel"                   /var/log/stunnel4/stunnel.log
+          & stop
+...

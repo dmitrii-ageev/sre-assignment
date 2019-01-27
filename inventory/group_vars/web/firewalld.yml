@@ -1,0 +1,70 @@
+---
+shhirose_firewalld:
+  default_zone: reject
+
+  zones:
+    - zone: reject
+      state: enabled
+
+  interfaces:
+    - interface: eth0
+      zone: reject
+      immediate: true
+      permanent: true
+      state: enabled
+
+  targets:
+    - target: REJECT
+      zone: reject
+
+  services:
+    - service: ssh
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+    - service: http
+      zone: reject
+      immediate: true
+      permanent: true
+      state: enabled
+
+  rich_rules:
+    - rule: "rule service name=ssh accept limit value=2/m"
+      zone: reject
+      immediate: true
+      permanent: true
+      state: enabled
+
+  icmp_blocks:
+    - type: echo-request
+      zone: reject
+      immediate: true
+      permanent: true
+      state: enabled
+    - type: host-redirect
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: network-redirect
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: redirect
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: tos-host-redirect
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+    - type: tos-network-redirect
+      zone: reject
+      immediate: true
+      permanent: true
+      state: disabled
+...

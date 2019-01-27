@@ -1,0 +1,4 @@
+{{ ansible_managed | comment }}
+{% for key, value in aliases__list | dictsort %}
+{{   key }}: {{ value }}
+{% endfor %}

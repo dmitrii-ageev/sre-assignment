@@ -1,0 +1,5 @@
+---
+# Host name and domain settings
+hostname: mx
+domainname: qrious.co.nz
+...

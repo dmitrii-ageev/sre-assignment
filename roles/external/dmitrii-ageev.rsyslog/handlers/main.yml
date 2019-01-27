@@ -1,0 +1,34 @@
+---
+- name: Reload systemd configuration
+  systemd:
+    name: "{{ rsyslog__service }}"
+    daemon_reload: yes
+
+- name: Start rsyslog service
+  systemd:
+    name: "{{ rsyslog__service }}"
+    state: started
+    enabled: yes
+  register: rsyslog__service_started
+
+- name: Stop rsyslog service
+  systemd:
+    name: "{{ rsyslog__service }}"
+    state: stopped
+
+- name: Restart rsyslog service
+  systemd:
+    name: "{{ rsyslog__service }}"
+    state: restarted
+    enabled: yes
+  register: rsyslog__service_restarted
+
+- name: Reload rsyslog service
+  systemd:
+    name: "{{ rsyslog__service }}"
+    state: reloaded
+    enabled: yes
+  when:
+  - rsyslog__service_started is undefined
+  - rsyslog__service_restarted is undefined
+...

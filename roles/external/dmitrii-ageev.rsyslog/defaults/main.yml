@@ -1,0 +1,122 @@
+---
+# STANDARD SETTINGS SECTION
+# STATUS OF PACKAGE (present, absent)
+rsyslog__state:                present
+
+# SERVICE, DAEMON, OPTIONS AND DESCRIPTION
+rsyslog__service:              "rsyslog"
+rsyslog__service_name:         "{{ rsyslog__service }}"
+rsyslog__daemon:               "{{ rsyslog__service }}d"
+rsyslog__description:          "{{ rsyslog__service }} - reliable and extended syslogd"
+
+# THE DAEMON OPTIONS
+rsyslog__daemon_options:       ""
+
+# USER AND GROUP
+rsyslog__user:                 "root"
+rsyslog__group:                "{{ rsyslog__user }}"
+
+# MODES
+rsyslog__dir_mode:             "0755"
+rsyslog__file_mode:            "0644"
+rsyslog__exec_mode:            "0755"
+
+# DIRECTORIES
+rsyslog__root_dir:             ""
+rsyslog__etc_dir:              "{{ rsyslog__root_dir }}/etc"
+rsyslog__lib_dir:              "{{ rsyslog__root_dir }}/lib"
+rsyslog__home_dir:             "{{ rsyslog__root_dir }}/home"
+rsyslog__usr_dir:              "{{ rsyslog__root_dir }}/usr"
+rsyslog__usr_sbin_dir:         "{{ rsyslog__usr_dir  }}/sbin"
+rsyslog__var_dir:              "{{ rsyslog__root_dir }}/var"
+rsyslog__var_run_dir:          "{{ rsyslog__var_dir  }}/run"
+rsyslog__var_log_dir:          "{{ rsyslog__var_dir  }}/log"
+rsyslog__var_spool_dir:        "{{ rsyslog__var_dir  }}/spool"
+
+rsyslog__conf_dir:             "{{ rsyslog__etc_dir }}"
+rsyslog__environment_dir:      "{{ rsyslog__etc_dir }}/{{ 'default' if ansible_os_family == 'Debian' else 'sysconfig' }}"
+rsyslog__dynamic_conf_dir:     "{{ rsyslog__etc_dir }}/{{ rsyslog__service }}.d"
+rsyslog__log_dir:              "{{ rsyslog__var_log_dir }}"
+rsyslog__run_dir:              "{{ rsyslog__var_run_dir if ansible_os_family == 'Debian' else 'run/'+rsyslog__service }}"
+rsyslog__work_dir:             "{{ rsyslog__var_spool_dir }}/{{ rsyslog__service }}"
+
+rsyslog__directories:
+- "{{ rsyslog__log_dir }}"
+- "{{ rsyslog__work_dir }}"
+- "{{ rsyslog__dynamic_conf_dir }}"
+
+# FILES
+rsyslog__pid_file:             "{{ rsyslog__run_dir }}/{{ rsyslog__daemon }}.pid"
+rsyslog__conf_file:            "{{ rsyslog__conf_dir }}/{{ rsyslog__service }}.conf"
+rsyslog__daemon_file:          "{{ rsyslog__usr_sbin_dir }}/{{ rsyslog__daemon }}"
+rsyslog__environment_file:     "{{ rsyslog__environment_dir }}/{{ rsyslog__service }}"
+rsyslog__vendor_unit_file:     "{{ rsyslog__lib_dir }}/systemd/system/{{ rsyslog__service }}.service"
+rsyslog__system_unit_file:     "{{ rsyslog__etc_dir }}/systemd/system/{{ rsyslog__service }}.service"
+rsyslog__system_init_file:     "{{ rsyslog__etc_dir }}/init.d/{{ rsyslog__service }}"
+
+# REQUIRED PACKAGES
+rsyslog__packages:
+  Debian:
+    8:
+      packages:
+      - "{{ rsyslog__service }}"
+    9:
+      packages:
+      - "{{ rsyslog__service }}"
+  Ubuntu:
+    16:
+      packages:
+      - "{{ rsyslog__service }}"
+    18:
+      packages:
+      - "{{ rsyslog__service }}"
+  CentOS:
+    7:
+      packages:
+      - "{{ rsyslog__service }}"
+  RedHat:
+    7:
+      packages:
+        - "{{ rsyslog__service }}"
+
+# DEFAULT RSYSLOG SETTINGS
+rsyslog__modules:
+- comment: Provides support for local system logging (e.g. via logger command)
+  name: imuxsock
+- comment: Provides kernel logging support (previously done by rklogd)
+  name: imklog
+- comment: Provides '--MARK--' message capability
+  name: immark
+  options: $MarkMessagePeriod 3600
+
+rsyslog__default_config:
+- name: "50-default.conf"
+  config:
+  - comment: "First some standard log files. Log by facility."
+    options: |
+      auth,authpriv.*                           /var/log/auth.log
+      *.*;auth,authpriv.none                    -/var/log/syslog
+      *.info;mail.none;authpriv.none;cron.none  -/var/log/messages
+      cron.*                                    /var/log/cron.log
+      daemon.*                                  -/var/log/daemon.log
+      kern.*                                    -/var/log/kern.log
+      lpr.*                                     -/var/log/lpr.log
+      mail.*                                    -/var/log/mail.log
+  - comment: "Logging for the mail system."
+    options: |
+      mail.info                                 -/var/log/mail.info
+      mail.warn                                 -/var/log/mail.warn
+      mail.err                                  -/var/log/mail.err
+  - comment: "Everybody gets emergency messages."
+    options: |
+      *.emerg                                   *
+  - comment: "Logging to the console."
+    options: |
+      daemon.*;mail.*;\
+               news.err;\
+               *.=debug;*.=info;\
+               *.=notice;*.=warn                |/dev/console
+
+# GENERATE DYNAMIC CONFIG
+rsyslog__dynamic_config: "{{ rsyslog__default_config + rsyslog__config|d([]) }}"
+...

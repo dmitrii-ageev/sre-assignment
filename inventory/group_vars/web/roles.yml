@@ -1,0 +1,9 @@
+---
+web_group__roles:
+  # Uninstall a NGINX web service
+  - nginx
+  # Install DockerCE
+  - docker
+  # Run Docker containers
+  - docker_nginx
+...

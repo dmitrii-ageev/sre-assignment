@@ -1,0 +1,27 @@
+---
+- name: Get the docker service status
+  command: systemctl status docker.service
+  register: docker_service_status
+  failed_when: false
+  changed_when: false
+  ignore_errors: true
+
+- name: Stop and remove the docker container
+  docker_container:
+    name: nginx
+    state: absent
+    keep_volumes: false
+  when: docker_service_status.rc == 0
+
+- name: Delete the docker image
+  docker_image:
+    name: nginx
+    tag: latest
+    state: absent
+  when: docker_service_status.rc == 0
+
+- name: Remove the resource.log file
+  file:
+    path: "{{ docker_nginx__resource_log }}"
+    state: absent
+...

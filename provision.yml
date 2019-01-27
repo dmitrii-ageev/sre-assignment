@@ -1,0 +1,55 @@
+---
+- name: Running the Ansible playbook
+  hosts: all
+  #
+  # Become root user
+  become: true
+  #
+  # Gather system info
+  gather_facts: true
+
+  pre_tasks:
+    - name: Merge roles into one list
+      merge_vars:
+        suffix_to_merge: __roles
+        merged_var_name: playbook_roles
+        expected_type: list
+        recursive_dict_merge: true
+      when: playbook_roles is undefined
+
+    - name: The list of roles to be executed
+      debug:
+        var: playbook_roles
+        verbosity: 2
+
+  roles:
+    # Note: The roles order is important!
+    - role: hostname
+      when: '"hostname" in playbook_roles'
+    - role: timezone
+      when: '"timezone" in playbook_roles'
+    - role: FlatKey.selinux
+      when: '"FlatKey.selinux" in playbook_roles'
+    - role: dmitrii-ageev.rsyslog
+      when: '"dmitrii-ageev.rsyslog" in playbook_roles'
+    - role: dmitrii-ageev.logrotate
+      when: '"dmitrii-ageev.logrotate" in playbook_roles'
+    - role: common
+      when: '"common" in playbook_roles'
+    - role: accounts
+      when: '"accounts" in playbook_roles'
+    - role: sudo
+      when: '"sudo" in playbook_roles'
+    - role: openssh
+      when: '"openssh" in playbook_roles'
+    - role: ntp
+      when: '"ntp" in playbook_roles'
+    - role: aliases
+      when: '"aliases" in playbook_roles'
+    - role: shhirose.firewalld
+      when: '"shhirose.firewalld" in playbook_roles'
+    - role: docker
+      when: '"docker" in playbook_roles'
+    - role: docker_nginx
+      when: '"docker_nginx" in playbook_roles'
+...

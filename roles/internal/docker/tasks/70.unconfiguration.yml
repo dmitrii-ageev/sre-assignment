@@ -1,0 +1,18 @@
+---
+- name: Disable service at startup
+  systemd:
+    name: "{{ docker__service }}"
+    enabled: no
+    state: stopped
+  ignore_errors: true
+
+- name: Delete the bash completion file
+  file:
+    path: "{{ docker__etc_dir }}/bash_completion.d/{{ docker__daemon }}"
+    state: absent
+
+- name: Delete the configuration file
+  file:
+    path: "{{ docker__conf_file }}"
+    state: absent
+...

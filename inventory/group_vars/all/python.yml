@@ -1,0 +1,5 @@
+# use the full path to the python 2 executable for python
+# most hosts now use python 3 by default, so this is needed for ansible
+# to find a python it can use.
+ansible_python_interpreter: /usr/bin/python2.7
+...

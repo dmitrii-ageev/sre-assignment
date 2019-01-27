@@ -1,0 +1,33 @@
+---
+- name: Install the docker packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  notify: Restart service
+  with_items: "{{ docker__packages }}"
+
+- name: Install the docker required packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  notify: Restart service
+  with_items: "{{ docker__required_packages }}"
+
+- name: Install the Python library
+  pip:
+    name: docker-py
+    state: present
+
+- name: Create the application folder set
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ docker__user }}"
+    group: "{{ docker__group }}"
+    mode: "{{ docker__dir_mode }}"
+  with_items: "{{ docker__directories }}"
+  become: true
+  notify: Reload service
+...

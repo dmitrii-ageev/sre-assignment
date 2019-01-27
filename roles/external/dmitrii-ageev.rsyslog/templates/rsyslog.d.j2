@@ -1,0 +1,3 @@
+{{ ansible_managed | comment }}
+{% import 'rsyslog.macros.j2' as macros with context %}
+{{ macros.print_config(item.config) -}}

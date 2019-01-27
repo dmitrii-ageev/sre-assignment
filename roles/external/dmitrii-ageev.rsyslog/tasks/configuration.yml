@@ -1,0 +1,20 @@
+---
+- name: Create the main configuration file
+  template:
+    src: "{{ rsyslog__service }}.conf.j2"
+    dest: "{{ rsyslog__conf_file }}"
+    owner: "{{ rsyslog__user }}"
+    group: "{{ rsyslog__group }}"
+    mode: "{{ rsyslog__file_mode }}"
+  when: rsyslog__conf_file is defined
+  notify: Restart rsyslog service
+
+- name: Create dynamic configuration files
+  template:
+    src: rsyslog.d.j2
+    dest: "{{ rsyslog__dynamic_conf_dir }}/{{ item.name }}"
+    mode: "{{ rsyslog__file_mode }}"
+  when: item is defined
+  with_items: "{{ rsyslog__dynamic_config }}"
+  notify: Restart rsyslog service
+...

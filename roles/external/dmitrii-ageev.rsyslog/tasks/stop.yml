@@ -1,0 +1,18 @@
+---
+- name: Disable service and stop it
+  systemd:
+    name: "{{ rsyslog__service_name }}"
+    enabled: no
+    state: stopped
+  failed_when: False
+  notify: Reload systemd configuration
+
+- name: Delete the service init/unit and environment files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ rsyslog__system_init_file }}"
+  - "{{ rsyslog__system_unit_file }}"
+  - "{{ rsyslog__environment_file }}"
+...

@@ -1,0 +1,32 @@
+#
+# {{ ansible_managed | default('This file is managed by Ansible.') }}
+#
+# Check this guidance if you have any questions:
+# man systemd.unit
+#  -or-
+# https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+#
+[Unit]
+Description={{ ntp__description }}
+After=syslog.target network.target auditd.service
+Before=
+
+[Service]
+{% if not ntp__daemon_run_as_root %}
+User={{ ntp__user }}
+Group={{ ntp__group }}
+{% endif %}
+{% if ntp__daemon_fork %}
+Type=forking
+{% endif %}
+PIDFile={{ ntp__pid_file }}
+EnvironmentFile=-{{ ntp__system_env_file }}
+ExecStartPre=/bin/rm -f {{ ntp__pid_file }}
+ExecStart={{ ntp__daemon_file }} $OPTIONS
+ExecReload=/bin/kill -1 $PIDFile
+Restart=on-failure
+KillMode=process
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

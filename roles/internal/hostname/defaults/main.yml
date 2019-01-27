@@ -1,0 +1,3 @@
+---
+hostname__fqdn: "{{ hostname | default('server') }}.{{ domainname | default('domain.net') }}"
+...

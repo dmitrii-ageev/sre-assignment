@@ -1,0 +1,4 @@
+---
+- name: Update aliases database
+  command: newaliases
+...

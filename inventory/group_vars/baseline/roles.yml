@@ -1,0 +1,29 @@
+---
+baseline__roles:
+  # Install Ansible support
+  - ansible-support
+  # Set hostname
+  - hostname
+  # Set timezone
+  - timezone
+  # Set Linux Kernel parameters
+  - sysctl
+  # Configure SELinux
+  - FlatKey.selinux
+  # Configure logging service
+  - dmitrii-ageev.rsyslog
+  # Configure logrotate service
+  - dmitrii-ageev.logrotate
+  # Create accounts
+  - accounts
+  # Configure sudo access
+  - sudo
+  # Keep clock synchronised
+  - ntp
+  # Install common packages
+  - common
+  # Update OpenSSH settings
+  - openssh
+  # Set firewall rules
+  - shhirose.firewalld
+...

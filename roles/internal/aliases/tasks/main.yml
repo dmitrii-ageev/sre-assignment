@@ -1,0 +1,16 @@
+---
+- name: Check if an aliases file exists
+  stat:
+    path: "{{ aliases__file_name }}"
+  register: aliases__file
+
+- name: Update aliases
+  template:
+    src: aliases.j2
+    dest: "{{ aliases__file_name }}"
+    mode: "{{ aliases__file_mode }}"
+    owner: "{{ aliases__user }}"
+    group: "{{ aliases__group }}"
+  notify: Update aliases database
+  when: aliases__file.stat.exists
+...

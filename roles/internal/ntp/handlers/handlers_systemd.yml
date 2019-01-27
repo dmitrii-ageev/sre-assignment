@@ -1,0 +1,50 @@
+---
+- name: Using SystemD manager to start service
+  systemd:
+    name: "{{ ntp__service_name }}.service"
+    state: started
+  register: ntp__service_started
+  listen: Start ntp service
+  when:
+    - ntp__service_manager == 'systemd'
+    - ntp__service_started is undefined or not ntp__service_started.changed
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+    - ntp__service_reloaded is undefined or not ntp__service_reloaded.changed
+
+- name: Using SystemD manager to stop service
+  systemd:
+    name: "{{ ntp__service_name }}.service"
+    state: stopped
+  register: ntp__service_stopped
+  listen: Stop ntp service
+  when:
+    - ntp__service_manager == 'systemd'
+    - ntp__service_stopped is undefined or not ntp__service_stopped.changed
+
+- name: Using SystemD manager to restart service
+  systemd:
+    name: "{{ ntp__service_name }}.service"
+    state: restarted
+  register: ntp__service_restarted
+  listen: Restart ntp service
+  when:
+    - ntp__service_manager == 'systemd'
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+
+- name: Using SystemD manager to reload service
+  systemd:
+    name: "{{ ntp__service_name }}.service"
+    state: reloaded
+  when:
+    - ntp__service_manager == 'systemd'
+    - ntp__service_started is undefined or not ntp__service_started.changed
+    - ntp__service_restarted is undefined or not ntp__service_restarted.changed
+  listen: Reload ntp service
+
+- name: Run daemon-reload for SystemD manager
+  systemd:
+    name: "{{ ntp__service_name }}.service"
+    daemon_reload: yes
+  listen: Systemd daemon reload
+  when: ntp__service_manager == 'systemd'
+...

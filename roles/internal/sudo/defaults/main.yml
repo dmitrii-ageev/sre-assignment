@@ -1,0 +1,18 @@
+---
+sudo__group_name: "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"
+
+sudo__defaults:
+  - "!requiretty"
+  - "!visiblepw"
+  - always_set_home
+  - mail_badpass
+  - env_reset
+  - env_keep+=SSH_AUTH_SOCK
+  - secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+sudo__sudoers:
+  - name: "%{{ sudo__group_name }}"
+    nopasswd: false
+
+sudo__sudoers_d: []
+...

@@ -1,0 +1,8 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{% if ansible_default_ipv4.address is defined %}
+{{ ansible_default_ipv4.address }} {{ hostname__fqdn }}
+{% endif %}
+{% if ansible_default_ipv6.address is defined %}
+{{ ansible_default_ipv6.address }} {{ hostname__fqdn }}
+{% endif %}

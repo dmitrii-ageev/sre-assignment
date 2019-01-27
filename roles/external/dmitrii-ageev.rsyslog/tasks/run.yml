@@ -1,0 +1,17 @@
+---
+- name: Create the system environment file
+  template:
+    src: "{{ rsyslog__service }}.environment.file.j2"
+    dest: "{{ rsyslog__environment_file }}"
+    mode: "{{ rsyslog__file_mode }}"
+  notify: Restart rsyslog service
+
+- name: Install systemd unit file
+  template:
+    src: "{{ rsyslog__service }}.unit.file.j2"
+    dest: "{{ rsyslog__system_unit_file }}"
+    mode: "{{ rsyslog__file_mode }}"
+  notify:
+  - Reload systemd configuration
+  - Restart rsyslog service
+...

@@ -1,0 +1,9 @@
+---
+# Defaults file for accounts
+
+# Initialise variables with empty values
+accounts: {}
+deleted_accounts: {}
+
+accounts__htpasswd_file: /etc/htpasswd
+...

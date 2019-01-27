@@ -1,0 +1,8 @@
+---
+# Status of package ( present, absent )
+docker_nginx__state: present
+docker_nginx__healthcheck_script: "healthcheck.sh"
+docker_nginx__healthcheck_script_local: "scripts/{{ docker_nginx__healthcheck_script }}"
+docker_nginx__healthcheck_script_path: "/usr/local/bin/{{ docker_nginx__healthcheck_script }}"
+docker_nginx__resource_log: "/var/log/resource.log"
+...

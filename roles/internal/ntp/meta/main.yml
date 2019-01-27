@@ -1,0 +1,36 @@
+---
+galaxy_info:
+  author: Dmitrii Ageev
+  license: GPLv2
+  min_ansible_version: 2.3
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 18
+        - 16
+        - 14
+        - 12
+    - name: CentOS
+      versiona:
+        - 7
+        - 6
+  categories:
+    - time
+    - system
+dependencies:
+  # Logrotate settings
+  - role: dmitrii-ageev.logrotate
+    logrotate__files:
+      - name: "{{ ntp__service_name }}"
+        path:
+          - "{{ ntp__log_file }}"
+        options:
+          - weekly
+          - rotate 4
+          - copytruncate
+          - compress
+          - delaycompress
+          - missingok
+          - notifempty
+        absent: "{{ True if ntp__state == 'absent' else False }}"
+...

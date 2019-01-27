@@ -1,0 +1,16 @@
+---
+- block:
+    - name: Create a group for the daemon
+      group:
+        name: "{{ ntp__group }}"
+        system: yes
+
+    - name: Create a user for the daemon
+      user:
+        name: "{{ ntp__user }}"
+        group: "{{ ntp__group }}"
+        system: yes
+        createhome: no
+        comment: "{{ ntp__description }}"
+  when: ntp__user != "root"
+...

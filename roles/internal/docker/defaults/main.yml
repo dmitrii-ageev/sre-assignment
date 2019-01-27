@@ -1,0 +1,96 @@
+---
+# Status of package ( present, absent )
+docker__state: present
+
+# Administrator user - the user who will manage the server
+docker__administrator: "{{ management_account | default('root') }}"
+
+# Service, daemon, opt_ions and description
+docker__service: "docker"
+docker__daemon:  "dockerd"
+docker__daemon_options: "--selinux-enabled --iptables=false "
+# docker__daemon_options: ""
+docker__description: "{{ docker__service }} is open source software that implements the xxxxx for the Internet."
+
+# User and group
+docker__user:  "{{ docker__daemon }}"
+docker__group: "{{ docker__user }}"
+
+# Modes
+docker__dir_mode:  "0750"
+docker__file_mode: "0640"
+docker__exec_mode: "0755"
+
+# Directories
+docker__root_dir:       ""
+docker__home_dir:       "{{ docker__root_dir }}/home"
+docker__etc_dir:        "{{ docker__root_dir }}/etc"
+docker__bin_dir:        "{{ docker__root_dir }}/bin"
+docker__sbin_dir:       "{{ docker__root_dir }}/sbin"
+docker__lib_dir:        "{{ docker__root_dir }}/lib"
+docker__lib64_dir:      "{{ docker__root_dir }}/lib64"
+docker__opt_dir:        "{{ docker__root_dir }}/opt"
+docker__opt_conf_dir:   "{{ docker__opt_dir }}/etc"
+docker__opt_bin_dir:    "{{ docker__opt_dir }}/bin"
+docker__opt_sbin_dir:   "{{ docker__opt_dir }}/sbin"
+docker__opt_lib_dir:    "{{ docker__opt_dir }}/lib"
+docker__opt_lib64_dir:  "{{ docker__opt_dir }}/lib64"
+docker__usr_dir:        "{{ docker__root_dir }}/usr"
+docker__usr_bin_dir:    "{{ docker__usr_dir }}/bin"
+docker__usr_sbin_dir:   "{{ docker__usr_dir }}/sbin"
+docker__usr_lib_dir:    "{{ docker__usr_dir }}/lib"
+docker__usr_lib64_dir:  "{{ docker__usr_dir }}/lib64"
+docker__var_dir:        "{{ docker__root_dir }}/var"
+docker__var_run_dir:    "{{ docker__var_dir }}/run"
+docker__var_log_dir:    "{{ docker__var_dir }}/log"
+docker__var_cache_dir:  "{{ docker__var_dir }}/cache"
+docker__var_spool_dir:  "{{ docker__var_dir }}/spool"
+docker__var_tmp_dir:    "{{ docker__var_dir }}/tmp"
+docker__var_db_dir:     "{{ docker__var_dir }}/db"
+
+docker__conf_dir:       "{{ docker__etc_dir }}/{{ docker__service }}"
+docker__cert_dir:       "{{ docker__conf_dir }}/certs.d"
+docker__user_home_dir:  "{{ docker__home_dir }}/{{ docker__user }}"
+docker__run_dir:        "{{ docker__root_dir }}/run/{{ docker__service }}"
+docker__log_dir:        "{{ docker__var_log_dir }}/{{ docker__service }}"
+docker__cache_dir:      "{{ docker__var_cache_dir }}/{{ docker__service }}"
+docker__spool_dir:      "{{ docker__var_spool_dir }}/{{ docker__service }}"
+docker__tmp_dir:        "{{ docker__var_tmp_dir }}/{{ docker__service }}"
+docker__data_dir:       "{{ docker__cache_dir }}/{{ docker__service }}"
+
+docker__directories:
+  - "{{ docker__conf_dir }}"
+  - "{{ docker__cert_dir }}"
+
+# Files
+docker__daemon_file:             "{{ docker__usr_bin_dir }}/{{ docker__daemon }}"
+docker__conf_file:               "{{ docker__conf_dir }}/daemon.json"
+docker__sysconfig_options_file:  "{{ docker__etc_dir }}/sysconfig/{{ docker__service }}"
+docker__sysconfig_network_file:  "{{ docker__etc_dir }}/sysconfig/{{ docker__service }}-network"
+docker__sysconfig_storage_file:  "{{ docker__etc_dir }}/sysconfig/{{ docker__service }}-storage"
+docker__sysconfig_storage_setup_file: "{{ docker__etc_dir }}/sysconfig/{{ docker__service }}-storage-setup"
+docker__logrotate_file_name:     "{{ docker__service }}"
+docker__vendor_service_file:     "{{ docker__usr_lib_dir }}/systemd/system/{{ docker__service }}.service"
+docker__system_service_file:     "{{ docker__etc_dir }}/systemd/system/{{ docker__service }}.service"
+docker__system_environment_file: "{{ docker__etc_dir }}/sysconfig/{{ docker__service }}"
+docker__sudoers_file:            "{{ docker__etc_dir }}/sudoers.d/{{ docker__service }}"
+docker__pid_file:                "{{ docker__run_dir }}/{{ docker__service }}.pid"
+docker__log_file:                "{{ docker__log_dir }}/{{ docker__service }}.log"
+docker__debug_file:              "{{ docker__log_dir }}/{{ docker__service }}.run"
+docker__lock_file:               "{{ docker__spool_dir }}/{{ docker__service }}.lock"
+
+# IP addresses
+docker__host_ipv4_address:   "{{ ansible_default_ipv4.address | default('127.0.0.1') }}"
+docker__host_ipv6_address:   "{{ ansible_default_ipv6.address | default('::1') }}"
+
+docker__ipv4_address:        "{{ docker__host_ipv4_address }}"
+docker__ipv6_address:        "{{ docker__host_ipv6_address }}"
+
+# Required packages
+docker__packages:
+  - "docker-engine"
+  - "docker-engine-selinux"
+  - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+docker__required_packages:
+  - "python2-pip"
+...

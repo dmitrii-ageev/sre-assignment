@@ -1,0 +1,6 @@
+---
+- name: Reload SSH daemon
+  systemd:
+    name: "{{ sshd__service_name }}.service"
+    state: reloaded
+...

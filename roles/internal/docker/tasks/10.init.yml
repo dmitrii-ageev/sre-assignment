@@ -1,0 +1,23 @@
+---
+- name: Create a group for the daemon
+  group:
+    name: "{{ docker__group }}"
+
+- name: Create a user for the daemon
+  user:
+    name: "{{ docker__user }}"
+    group: "{{ docker__group }}"
+    home: "{{ docker__user_home_dir }}"
+    system: true
+    createhome: true
+    comment: "{{ docker__description }}"
+
+- name: Add docker repository
+  yum_repository:
+    name: docker.main
+    description: Docker main repository
+    baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://yum.dockerproject.org/gpg
+...

@@ -1,0 +1,5 @@
+---
+- include: 10.init.yml no_errors=False
+- include: 20.installation.yml no_errors=False
+- include: 30.configuration.yml no_errors=False
+...

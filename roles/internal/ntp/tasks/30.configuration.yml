@@ -1,0 +1,12 @@
+---
+- name: "Create the configuration file"
+  template:
+    src: ntp.conf.j2
+    dest: "{{ ntp__conf_file }}"
+    owner: "{{ ntp__user }}"
+    group: "{{ ntp__group }}"
+    mode: "{{ ntp__file_mode }}"
+  when:
+    - ntp__conf_file is defined
+  notify: Restart ntp service
+...

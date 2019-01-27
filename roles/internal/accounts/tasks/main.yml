@@ -1,0 +1,124 @@
+---
+# 0. Delete accounts that should be deleted
+# 1. Create accounts that should be created
+# 2. Get list of all accounts (uid > 1000)
+# 3. Delete those which aren't in the list
+#
+# 0. Delete accounts that should be deleted
+- name: Deleted account removal
+  user:
+    name: "{{ item.value.name }}"
+    state: absent
+  with_dict: "{{ deleted_accounts }}"
+
+- name: Deleted account groups removal
+  group:
+    name: "{{ item.value.name }}"
+    state: absent
+  with_dict: "{{ deleted_accounts }}"
+
+# 1. Create accounts that should be created
+# Create account
+- name: Create group
+  group:
+    name: "{{ item.value.name }}"
+    gid: "{{ item.value.uid }}"
+    system: "{{ True if item.value.password is not defined else False }}"
+    state: present
+  when:
+    - item.value.uid is defined
+  with_dict: "{{ accounts }}"
+
+- name: Create account
+  user:
+    name: "{{ item.value.name }}"
+    uid: "{{ item.value.uid }}"
+    group: "{{ item.value.name }}"
+    password: "{{ item.value.password|d('!!') }}"
+    system: "{{ True if item.value.password is not defined else False }}"
+    groups: "{{ [ item.value.name ] + item.value.groups|default([]) + global__user_groups_everyone }}"
+    update_password: always
+    shell: "{{ item.value.shell|default('/bin/bash') }}"
+    state: present
+    createhome: true
+    append: true
+  when:
+    - item.value.uid is defined
+    - (ansible_user is defined and item.value.name != ansible_user) or
+      (ansible_user is undefined and item.value.name != ansible_env.USER)
+  with_dict: "{{ accounts }}"
+
+# Enforce public keys
+- name: Add account public keys
+  authorized_key:
+    user: "{{ item.value.name }}"
+    key: "{{ item.value.ssh_key | join('\n') }}"
+    exclusive: true
+    manage_dir: true
+  when:
+    - item.value.ssh_key is defined
+    - (ansible_user is defined and item.value.name != ansible_user) or
+      (ansible_user is undefined and item.value.name != ansible_env.USER)
+  with_dict: "{{ accounts }}"
+
+- name: Make sure /etc/sudoers.d directory exists
+  file:
+    path: /etc/sudoers.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Enable sudo access
+  template:
+    src: sudoers.d.j2
+    dest: "/etc/sudoers.d/{{ item.value.name }}"
+    owner: root
+    group: root
+    mode: 0640
+  when:
+    - item.value.uid is defined
+    - item.value.name in global__user_sudoers
+  with_dict: "{{ accounts }}"
+
+# Create /etc/htpasswd file
+- name: Generate htpasswd file
+  template:
+    src: htpasswd.j2
+    dest: "{{ accounts__htpasswd_file }}"
+    owner: root
+    group: root
+    mode: 0640
+    force: true
+
+# 2. Get list of all accounts (uid > 1000)
+# Read password file
+- name: Read passwd file
+  slurp:
+    src: "/etc/passwd"
+  register: accounts__passwd
+  changed_when: false
+
+# 3. Delete those which aren't in the list
+# This lets us see what would get changed without executing the unlock command
+- name: Delete unknown accounts
+  user:
+    name: "{{ item.split(':').0 }}"
+    state: absent
+    remove: true
+    force: true
+  when:
+    - not item.split(':').0 in accounts
+    - item.split(':').0 != 'nobody'
+    - item.split(':').2|int >= 1000
+  with_items: "{{ (accounts__passwd.content | b64decode).splitlines() }}"
+
+- name: Revoke sudo access from unknown accounts
+  file:
+    path: "/etc/sudoers.d/{{ item.split(':').0 }}"
+    state: absent
+  when:
+    - item.split(':').2|int >= 100
+    - not item.split(':').0 in global__user_sudoers
+  with_items: "{{ (accounts__passwd.content | b64decode).splitlines() }}"
+...

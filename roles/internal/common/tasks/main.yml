@@ -1,0 +1,49 @@
+---
+- name: "Processing packages"
+  block:
+
+    - name: "Remove packages"
+      package:
+        state: absent
+        name: "{{ item }}"
+      with_items: "{{ common__packages.remove }}"
+      when: common__packages.remove is defined
+
+    - name: "Install packages"
+      package:
+        state: present
+        name: "{{ item }}"
+      with_items: "{{ common__packages.install }}"
+      when: common__packages.install is defined
+
+    - name: "Upgrade packages"
+      package:
+        state: latest
+        name: "{{ item }}"
+      with_items: "{{ common__packages.upgrade }}"
+      when: common__packages.upgrade is defined
+
+  when: common__packages is defined
+
+- name: "Processing files"
+  block:
+
+    - name: "Remove files"
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items: "{{ common__files.remove }}"
+      when: common__files.remove is defined
+
+    - name: "Altering file permissions"
+      file:
+        path: "{{ item.name }}"
+        state: "{{ item.state | default('file') }}"
+        owner: "{{ item.owner | default('root') }}"
+        group: "{{ item.group | default('root') }}"
+        mode:  "{{ item.mode | default('0644') }}"
+      with_items: "{{ common__files.chmod }}"
+      when: common__files.chmod is defined
+
+  when: common__files is defined
+...

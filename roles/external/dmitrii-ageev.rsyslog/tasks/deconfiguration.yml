@@ -1,0 +1,7 @@
+---
+- name: "Delete the configuration file"
+  file:
+    path: "{{ rsyslog__conf_file }}"
+    state: absent
+  when: rsyslog__conf_file is defined
+...

@@ -1,0 +1,22 @@
+---
+#
+# requirements.yml - a list of external roles to be installed
+#
+# Usage:
+#  to install or update external roles use this command:
+#  '$ ansible-galaxy install -f -r requirements.yml -p external/ '
+#
+# Example:
+# - src: geerlingguy.git
+#   version: 2.4.0
+#   name: mysql
+#   scm: git
+#
+# - src: https://github.com/geerlingguy/ansible-role-mysql
+#
+# See for more help: http://docs.ansible.com/ansible/latest/galaxy.html
+#
+- src: dmitrii-ageev.logrotate
+- src: dmitrii-ageev.rsyslog
+- src: shhirose.firewalld
+- src: FlatKey.selinux

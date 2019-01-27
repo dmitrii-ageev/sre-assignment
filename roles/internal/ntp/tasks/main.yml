@@ -1,0 +1,9 @@
+---
+- import_tasks: analysis.yml
+
+- import_tasks: install.yml
+  when: ntp__state == "present"
+
+- import_tasks: uninstall.yml
+  when: ntp__state == "absent"
+...
