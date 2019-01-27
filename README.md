@@ -33,6 +33,6 @@ One more thing: if you use a container for a deployment process, you'll lose ter
 
 If you have any questions, or need more thorough explanations, just let me know.
 
-*Regards,*
+*__Regards,__*
 
-_Dmitrii Ageev <d.ageev@gmail.com>_
+_Dmitrii Ageev <<d.ageev@gmail.com>>_
